@@ -9,14 +9,17 @@ import zIndex from '@material-ui/core/styles/zIndex'
 export default function Home() {
 
   const [currentImage, setcurrentImage] = useState(null)
-  const [windowDimensions, setWindowDimensions] = useState({ height: 0, width: 0 })
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: null,
+    height: null,
+  })
 
   const FACING_MODE_USER = "user";
   const FACING_MODE_ENVIRONMENT = "environment";
   const [facingMode, setFacingMode] = useState(FACING_MODE_ENVIRONMENT)
-  let videoConstraints = {
+  const videoConstraints = {
     width: windowDimensions.width,
-    height: windowDimensions.height * 0.8,
+    height: windowDimensions.height * 0.7,
     facingMode: facingMode,
   }
 
@@ -31,7 +34,7 @@ export default function Home() {
 
 
   useEffect(() => {
-    // console.log(windowDimensions)
+    console.log(windowDimensions)
     // setVideoConstraints({
     //   width: windowDimensions.width,
     //   height: windowDimensions.height * 0.7,
@@ -55,91 +58,98 @@ export default function Home() {
     console.log('swith')
   }
 
-  return (
-    <Box>
-      <AppBar position='static'>
-        <Toolbar>
-          <Box> w:{videoConstraints.width}, h:{videoConstraints.height} </Box>
-        </Toolbar>
-      </AppBar>
-      {
-        _.isNull(currentImage) ?
-          <Box style={{
-            maxWidth: windowDimensions.width,
-            // overflow:'hidden'
-          }}>
+  if (!_.isNil(windowDimensions.width)) {
+    return (
+      <Box>
+        <AppBar position='static'>
+          <Toolbar>
+            <Box> w:{videoConstraints.width}, h:{videoConstraints.height} </Box>
+          </Toolbar>
+        </AppBar>
+        {
+          _.isNull(currentImage) && !_.isNil(window) ?
             <Box style={{
-              position: 'absolute',
-              padding: 2,
-              display: 'flex',
-              width: '100%',
-              justifyContent: 'center',
-              zIndex: 10
-            }}
-            >
-              <Button
-                startIcon={<SwitchCameraIcon />}
-                size='large'
-                variant='contained'
-                onClick={() => handleSwitch()}
+              maxWidth: windowDimensions.width,
+              // overflow:'hidden'
+            }}>
+              <Box style={{
+                position: 'absolute',
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'center',
+                zIndex: 10
+              }}
               >
-                Switch
-              </Button>
-            </Box>
-            <Webcam
-              audio={false}
-              screenshotFormat="image/jpeg"
-              // mirrored={true}
-              // style={{ maxWidth: windowDimensions.width }}
-              videoConstraints={videoConstraints}
-              width={windowDimensions.width}
-              height={windowDimensions.height * 0.8}
-            >
-              {({ getScreenshot }) => (
-                <Box style={{ marginTop: 0 }}>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    size='large'
-                    fullWidth
-                    onClick={() => {
-                      const imageSrc = getScreenshot({
-                        width: windowDimensions.width,
-                        height: windowDimensions.height * 0.8
-                      })
-                      savePictureState(imageSrc)
-                    }}
-                  >
-                    Capture photo
-                  </Button>
-                </Box>
-              )}
-            </Webcam>
-          </Box>
-
-          :
-
-          <Box
-            style={{
-              display: 'flex',
-              flexDirection: 'column'
-            }}
-          >
-            <img src={currentImage} alt={'current picture'} />
-            <Box style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
-              <Button
-                variant='outlined'
-                color='secondary'
-                size='large'
-                onClick={() => {
-                  setcurrentImage(null)
-                }}
+                <Button
+                  startIcon={<SwitchCameraIcon />}
+                  size='large'
+                  variant='contained'
+                  onClick={() => handleSwitch()}
+                >
+                  Switch
+                </Button>
+              </Box>
+              <Webcam
+                audio={false}
+                screenshotFormat="image/jpeg"
+                videoConstraints={videoConstraints}
+                // mirrored={true}
+                // style={{ maxWidth: windowDimensions.width }}
               >
-                Retake picture
-              </Button>
+                {({ getScreenshot }) => (
+                  <Box style={{ marginTop: 0 }}>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      size='large'
+                      fullWidth
+                      onClick={() => {
+                        const imageSrc = getScreenshot({
+                          width: windowDimensions.width,
+                          height: windowDimensions.height * 0.7
+                        })
+                        savePictureState(imageSrc)
+                      }}
+                    >
+                      Capture photo
+                    </Button>
+                  </Box>
+                )}
+              </Webcam>
             </Box>
-          </Box>
-      }
-    </Box>
-  )
+
+            :
+
+            <Box
+              style={{
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+            >
+              <img src={currentImage} alt={'current picture'} />
+              <Box style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
+                <Button
+                  variant='outlined'
+                  color='secondary'
+                  size='large'
+                  onClick={() => {
+                    setcurrentImage(null)
+                  }}
+                >
+                  Retake picture
+                </Button>
+              </Box>
+            </Box>
+        }
+      </Box>
+    )
+  } else {
+    return (
+      <Box>
+        Loading
+      </Box>
+    )
+  }
+
+
 }
