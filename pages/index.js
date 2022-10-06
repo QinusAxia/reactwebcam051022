@@ -90,8 +90,9 @@ export default function Home() {
               audio={false}
               screenshotFormat="image/jpeg"
               // mirrored={true}
-              style={{ maxWidth: windowDimensions.width }}
+              // style={{ maxWidth: windowDimensions.width }}
               videoConstraints={videoConstraints}
+              forceScreenshotSourceSize={true}
             >
               {({ getScreenshot }) => (
                 <Box style={{ marginTop: 0 }}>
