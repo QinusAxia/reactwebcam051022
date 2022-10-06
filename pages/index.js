@@ -90,11 +90,13 @@ export default function Home() {
                 </Button>
               </Box>
               <Webcam
-                audio={false}
-                screenshotFormat="image/jpeg"
                 videoConstraints={videoConstraints}
+                screenshotFormat="image/jpeg"
+                audio={false}
                 // mirrored={true}
-                // style={{ maxWidth: windowDimensions.width }}
+                style={{
+                  maxWidth: windowDimensions.width,
+                }}
               >
                 {({ getScreenshot }) => (
                   <Box style={{ marginTop: 0 }}>
@@ -104,10 +106,7 @@ export default function Home() {
                       size='large'
                       fullWidth
                       onClick={() => {
-                        const imageSrc = getScreenshot({
-                          width: windowDimensions.width,
-                          height: windowDimensions.height * 0.7
-                        })
+                        const imageSrc = getScreenshot()
                         savePictureState(imageSrc)
                       }}
                     >
