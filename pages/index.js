@@ -18,8 +18,8 @@ export default function Home() {
   const FACING_MODE_ENVIRONMENT = "environment";
   const [facingMode, setFacingMode] = useState(FACING_MODE_ENVIRONMENT)
   const videoConstraints = {
-    width: windowDimensions.width,
-    height: windowDimensions.height * 0.7,
+    width: 453, //windowDimensions.width,
+    height: 631, //windowDimensions.height * 0.7,
     facingMode: facingMode,
   }
 
@@ -69,7 +69,7 @@ export default function Home() {
         {
           _.isNull(currentImage) && !_.isNil(window) ?
             <Box style={{
-              maxWidth: windowDimensions.width,
+              // maxWidth: windowDimensions.width,
               // overflow:'hidden'
             }}>
               <Box style={{
@@ -94,9 +94,9 @@ export default function Home() {
                 screenshotFormat="image/jpeg"
                 audio={false}
                 // mirrored={true}
-                style={{
-                  maxWidth: windowDimensions.width,
-                }}
+                // style={{
+                //   maxWidth: windowDimensions.width,
+                // }}
               >
                 {({ getScreenshot }) => (
                   <Box style={{ marginTop: 0 }}>
