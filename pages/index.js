@@ -9,16 +9,16 @@ import zIndex from '@material-ui/core/styles/zIndex'
 export default function Home() {
 
   const [currentImage, setcurrentImage] = useState(null)
-  const [windowDimensions, setWindowDimensions] = useState({ height: 720, width: 1280 })
+  const [windowDimensions, setWindowDimensions] = useState({ height: 720, width: 100 })
 
   const FACING_MODE_USER = "user";
   const FACING_MODE_ENVIRONMENT = "environment";
   const [facingMode, setFacingMode] = useState(FACING_MODE_ENVIRONMENT)
-  const videoConstraints = {
+  let videoConstraints = {
     width: windowDimensions.width,
     height: windowDimensions.height * 0.7,
     facingMode: facingMode,
-  };
+  }
 
   useEffect(() => {
     setWindowDimensions({ height: window.innerHeight, width: window.innerWidth })
@@ -32,6 +32,11 @@ export default function Home() {
 
   useEffect(() => {
     // console.log(windowDimensions)
+    // setVideoConstraints({
+    //   width: windowDimensions.width,
+    //   height: windowDimensions.height * 0.7,
+    //   facingMode: facingMode,
+    // })
   }, [windowDimensions])
 
 
@@ -54,12 +59,15 @@ export default function Home() {
     <Box>
       <AppBar position='static'>
         <Toolbar>
-          <Box> CSV BOX TEST {windowDimensions.width} </Box>
+          <Box> w:{videoConstraints.width}, h:{videoConstraints.height} </Box>
         </Toolbar>
       </AppBar>
       {
         _.isNull(currentImage) ?
-          <Box style={{ maxWidth: windowDimensions.width }}>
+          <Box style={{
+            maxWidth: windowDimensions.width,
+            // overflow:'hidden'
+          }}>
             <Box style={{
               position: 'absolute',
               padding: 2,
@@ -79,11 +87,10 @@ export default function Home() {
               </Button>
             </Box>
             <Webcam
-              height={windowDimensions.height * 0.7}
-              // width={windowDimensions.width < 1100 ? windowDimensions.width : 1100}
               audio={false}
               screenshotFormat="image/jpeg"
-              reversed={true}
+              // mirrored={true}
+              style={{ maxWidth: windowDimensions.width }}
               videoConstraints={videoConstraints}
             >
               {({ getScreenshot }) => (
