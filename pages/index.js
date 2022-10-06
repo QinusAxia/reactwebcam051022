@@ -1,16 +1,22 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@material-ui/core'
 import _ from 'lodash'
-import { useEffect, useState } from 'react'
+import Image from 'next/image'
+import { useCallback, useEffect, useState } from 'react'
 import Webcam from 'react-webcam'
+import SwitchCameraIcon from '@material-ui/icons/SwitchCamera';
 
 export default function Home() {
 
   const [currentImage, setcurrentImage] = useState(null)
   const [windowDimensions, setWindowDimensions] = useState({ height: 720, width: 1280 })
+
+  const FACING_MODE_USER = "user";
+  const FACING_MODE_ENVIRONMENT = "environment";
+  const [facingMode, setFacingMode] = useState(FACING_MODE_ENVIRONMENT)
   const videoConstraints = {
     width: windowDimensions.width,
     height: windowDimensions.height * 0.7,
-    facingMode: "user"
+    facingMode: facingMode,
   };
 
   useEffect(() => {
@@ -31,6 +37,15 @@ export default function Home() {
     setcurrentImage(jpegImg)
   }
 
+  const handleSwitch = useCallback(() => {
+    setFacingMode(
+      prevState =>
+        prevState === FACING_MODE_USER
+          ? FACING_MODE_ENVIRONMENT
+          : FACING_MODE_USER
+    );
+  }, []);
+
   return (
     <Box>
       <AppBar position='static'>
@@ -40,7 +55,24 @@ export default function Home() {
       </AppBar>
       {
         _.isNull(currentImage) ?
-          <Box>
+          <Box style={{ maxWidth: windowDimensions.width }}>
+            <Box style={{
+              position: 'absolute',
+              padding: 2,
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'center'
+            }}
+            >
+              <Button
+                startIcon={<SwitchCameraIcon />}
+                size='small'
+                variant='contained'
+                onClick={handleSwitch}
+              >
+                switch
+              </Button>
+            </Box>
             <Webcam
               height={windowDimensions.height * 0.7}
               audio={false}
@@ -49,10 +81,12 @@ export default function Home() {
               videoConstraints={videoConstraints}
             >
               {({ getScreenshot }) => (
-                <Box display='flex' justifyContent={'center'} alignItems="center">
+                <Box style={{ marginTop: 0 }}>
                   <Button
                     variant='contained'
+                    color='primary'
                     size='large'
+                    fullWidth
                     onClick={() => {
                       const imageSrc = getScreenshot()
                       savePictureState(imageSrc)
@@ -67,20 +101,25 @@ export default function Home() {
 
           :
 
-          <Box display={'flex'} flexDirection='column' alignItems='center'>
-            <Box mb={2}>
-              <img src={currentImage} alt={'current picture'} />
+          <Box
+            style={{
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <img src={currentImage} alt={'current picture'} />
+            <Box style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
+              <Button
+                variant='outlined'
+                color='secondary'
+                size='large'
+                onClick={() => {
+                  setcurrentImage(null)
+                }}
+              >
+                Retake picture
+              </Button>
             </Box>
-            <Button
-              variant='outlined'
-              color='secondary'
-              size='large'
-              onClick={() => {
-                setcurrentImage(null)
-              }}
-            >
-              Retake picture
-            </Button>
           </Box>
       }
     </Box>
