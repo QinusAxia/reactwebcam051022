@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
 import Webcam from 'react-webcam'
 import SwitchCameraIcon from '@material-ui/icons/SwitchCamera';
+import zIndex from '@material-ui/core/styles/zIndex'
 
 export default function Home() {
 
@@ -28,6 +29,12 @@ export default function Home() {
     return () => window.removeEventListener('resize', handleResize);
   }, [])
 
+
+  useEffect(() => {
+    // console.log(windowDimensions)
+  }, [windowDimensions])
+
+
   const savePictureState = (jpegImg) => {
     // const image = URL.createObjectURL(jpegImg)
     // var binaryData = [];
@@ -37,20 +44,17 @@ export default function Home() {
     setcurrentImage(jpegImg)
   }
 
-  const handleSwitch = useCallback(() => {
-    setFacingMode(
-      prevState =>
-        prevState === FACING_MODE_USER
-          ? FACING_MODE_ENVIRONMENT
-          : FACING_MODE_USER
-    );
-  }, []);
+  const handleSwitch = () => {
+    facingMode === FACING_MODE_USER ?
+      setFacingMode(FACING_MODE_ENVIRONMENT) : setFacingMode(FACING_MODE_USER)
+    console.log('swith')
+  }
 
   return (
     <Box>
       <AppBar position='static'>
         <Toolbar>
-          <Box component={Typography}> CSV BOX TEST </Box>
+          <Box> CSV BOX TEST {windowDimensions.width} </Box>
         </Toolbar>
       </AppBar>
       {
@@ -61,20 +65,22 @@ export default function Home() {
               padding: 2,
               display: 'flex',
               width: '100%',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              zIndex: 10
             }}
             >
               <Button
                 startIcon={<SwitchCameraIcon />}
-                size='small'
+                size='large'
                 variant='contained'
-                onClick={handleSwitch}
+                onClick={() => handleSwitch()}
               >
-                switch
+                Switch
               </Button>
             </Box>
             <Webcam
               height={windowDimensions.height * 0.7}
+              // width={windowDimensions.width < 1100 ? windowDimensions.width : 1100}
               audio={false}
               screenshotFormat="image/jpeg"
               reversed={true}
