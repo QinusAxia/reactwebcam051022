@@ -9,14 +9,14 @@ import zIndex from '@material-ui/core/styles/zIndex'
 export default function Home() {
 
   const [currentImage, setcurrentImage] = useState(null)
-  const [windowDimensions, setWindowDimensions] = useState({ height: 720, width: 100 })
+  const [windowDimensions, setWindowDimensions] = useState({ height: 0, width: 0 })
 
   const FACING_MODE_USER = "user";
   const FACING_MODE_ENVIRONMENT = "environment";
   const [facingMode, setFacingMode] = useState(FACING_MODE_ENVIRONMENT)
   let videoConstraints = {
     width: windowDimensions.width,
-    height: windowDimensions.height * 0.7,
+    height: windowDimensions.height * 0.8,
     facingMode: facingMode,
   }
 
@@ -92,7 +92,8 @@ export default function Home() {
               // mirrored={true}
               // style={{ maxWidth: windowDimensions.width }}
               videoConstraints={videoConstraints}
-              forceScreenshotSourceSize={true}
+              width={windowDimensions.width}
+              height={windowDimensions.height * 0.8}
             >
               {({ getScreenshot }) => (
                 <Box style={{ marginTop: 0 }}>
@@ -102,7 +103,10 @@ export default function Home() {
                     size='large'
                     fullWidth
                     onClick={() => {
-                      const imageSrc = getScreenshot()
+                      const imageSrc = getScreenshot({
+                        width: windowDimensions.width,
+                        height: windowDimensions.height * 0.8
+                      })
                       savePictureState(imageSrc)
                     }}
                   >
